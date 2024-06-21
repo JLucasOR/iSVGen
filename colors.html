@@ -1112,8 +1112,15 @@ function pageInit(){
 	myPaths[2].setAttribute("onclick", "hueInit()");
 	myPaths[2].setAttribute("onkeypress", "hueInit()");
 	myPaths[2].setAttribute("title", "Colors");
+	let myLeft = document.getElementById("leftHalf");
+	let myRight = document.getElementById("rightHalf");
+	myLeft.setAttribute("focusable", "false")
+	myLeft.setAttribute("tabindex", "-1")
+	myLeft.setAttribute("title", "")
+	myRight.setAttribute("focusable", "false")
+	myRight.setAttribute("tabindex", "-1")
+	myRight.setAttribute("title", "")
 	
-
 }
 
 function bwOpposite(color){
@@ -1191,13 +1198,13 @@ function pickBW(color){
 	console.log(neighCons)
 	}
 	myLeft.setAttribute("onclick", "textHues()")
-	myRight.setAttribute("onclick", "neighHues()")
+	myRight.setAttribute("onclick", "keepText()")
 	myLL.setAttribute("onclick", "textHues()")
-	myRL.setAttribute("onclick", "neighHues()")
-	myLeft.setAttribute("onkeypres", "textHues()")
-	myRight.setAttribute("onkeypres", "neighHues()")
-	myLL.setAttribute("onkeypres", "textHues()")
-	myRL.setAttribute("onkeypres", "neighHues()")
+	myRL.setAttribute("onclick", "keepText()")
+	myLeft.setAttribute("onkeypress", "textHues()")
+	myRight.setAttribute("onkeypress", "keepText()")
+	myLL.setAttribute("onkeypress", "textHues()")
+	myRL.setAttribute("onkeypress", "keepText()")
 
 
 	
@@ -1361,13 +1368,13 @@ function pickColor(myWedge){
 	console.log(neighCons)
 	}
 	myLeft.setAttribute("onclick", "textHues()")
-	myRight.setAttribute("onclick", "neighHues()")
+	myRight.setAttribute("onclick", "keepText()")
 	myLL.setAttribute("onclick", "textHues()")
-	myRL.setAttribute("onclick", "neighHues()")
-	myLeft.setAttribute("onkeypres", "textHues()")
-	myRight.setAttribute("onkeypres", "neighHues()")
-	myLL.setAttribute("onkeypres", "textHues()")
-	myRL.setAttribute("onkeypres", "neighHues()")
+	myRL.setAttribute("onclick", "keepText()")
+	myLeft.setAttribute("onkeypress", "textHues()")
+	myRight.setAttribute("onkeypress", "keepText()")
+	myLL.setAttribute("onkeypress", "textHues()")
+	myRL.setAttribute("onkeypress", "keepText()")
 }
 function clearHalves(){
 	myLeft = document.getElementById("leftHalf");
@@ -1433,7 +1440,7 @@ function pickTextHue(wedge){
 	for (var i = 0; i < myPaths.length; i++) { 
 		myPaths[i].setAttribute("hue", myHue)
 		myPaths[i].setAttribute("onclick", "pickTextSat(this)");
-		myPaths[i].setAttribute("onkeypres", "pickTextSat(this)");
+		myPaths[i].setAttribute("onkeypress", "pickTextSat(this)");
 	}
 }
 
@@ -1454,7 +1461,7 @@ function pickTextSat(wedge){
 		myPaths[i].setAttribute("hue", myHue);
 		myPaths[i].setAttribute("saturation", mySat);
 		myPaths[i].setAttribute("onclick", "pickTextColor(this)");
-		myPaths[i].setAttribute("onkeypres", "pickTextColor(this)");
+		myPaths[i].setAttribute("onkeypress", "pickTextColor(this)");
 	}
 }
 
@@ -1468,7 +1475,22 @@ function pickTextColor(wedge){
 	console.log(curStyle)
 	myBody.setAttribute("style", curStyle.split(";")[0] +  "; color: " + wedge.getAttribute("title").split(" ")[0]) }
 	clearWedges()
-	if(traysFilled < 5){	neighHues()}
+	if(traysFilled < 5){	
+	traysFilled += 1;
+	let midCirc = document.getElementById("disCirc");
+	let midLabel = document.getElementById("disLabel");
+	let trayName = "tray" + traysFilled;
+	let labName = "trayLabel" + traysFilled;
+	var myTray = document.getElementById(trayName);
+	var myLab = document.getElementById(labName);
+	myTray.setAttribute("style", midCirc.getAttribute("style"));
+	myLab.setAttribute("style", midLabel.getAttribute("style"));
+	myLab.innerHTML = midLabel.innerHTML;
+	midCirc = document.getElementById("disCirc");
+	midCirc.setAttribute("style", "stroke: none; fill: none;");
+	midLabel = document.getElementById("disLabel");
+	midLabel.innerHTML = ""
+	neighHues()}
 
 }
 
@@ -1488,7 +1510,7 @@ clearHalves()
 	var myPaths = fillsGroup.children;
 	for (var i = 0; i < myPaths.length; i++) { 
 		myPaths[i].setAttribute("onclick", "pickNeighHue(this)");
-		myPaths[i].setAttribute("onkeypres", "pickTextColor(this)");
+		myPaths[i].setAttribute("onkeypress", "pickNeighHue(this)");
 	}
 
 }
@@ -1526,7 +1548,7 @@ function pickNeighHue(wedge){
 	for (var i = 0; i < myPaths.length; i++) { 
 		myPaths[i].setAttribute("hue", myHue)
 		myPaths[i].setAttribute("onclick", "pickNeighSat(this)");
-		myPaths[i].setAttribute("onkeypres", "pickTextColor(this)");
+		myPaths[i].setAttribute("onkeypress", "pickNeighSat(this)");
 	}
 }
 
@@ -1547,7 +1569,7 @@ function pickNeighSat(wedge){
 		myPaths[i].setAttribute("hue", myHue);
 		myPaths[i].setAttribute("saturation", mySat);
 		myPaths[i].setAttribute("onclick", "pickNeighColor(this)");
-		myPaths[i].setAttribute("onkeypres", "pickNeighColor(this)");
+		myPaths[i].setAttribute("onkeypress", "pickNeighColor(this)");
 	}
 }
 
@@ -1556,16 +1578,9 @@ var backInits = 0;
 function pickNeighColor(wedge){
 	myName = wedge.getAttribute("title")
 	console.log(wedge);
-	traysFilled += 1;
+
 	let midCirc = document.getElementById("disCirc");
 	let midLabel = document.getElementById("disLabel");
-	let trayName = "tray" + traysFilled;
-	let labName = "trayLabel" + traysFilled;
-	var myTray = document.getElementById(trayName);
-	var myLab = document.getElementById(labName);
-	myTray.setAttribute("style", midCirc.getAttribute("style"));
-	myLab.setAttribute("style", midLabel.getAttribute("style"));
-	myLab.innerHTML = midLabel.innerHTML;
 	
 	midCirc = document.getElementById("disCirc");
 	midCirc.setAttribute("style", "stroke: #000; fill: " + myName.split(" ")[0])
@@ -1617,18 +1632,37 @@ function pickNeighColor(wedge){
 	}
 	myLeft.setAttribute("onclick", "textHues()")	
 	myLL.setAttribute("onclick", "textHues()")
-	myLeft.setAttribute("onkeypres", "textHues()")	
-	myLL.setAttribute("onkeypres", "textHues()")
+	myLeft.setAttribute("onkeypress", "textHues()")	
+	myLL.setAttribute("onkeypress", "textHues()")
 	
 	if(traysFilled < 5){
 		myRight.setAttribute("style", "fill: #fff; stroke: #000");
 		myRL.innerHTML = "Next Color";
-		myRL.setAttribute("onclick", "neighHues()")
-		myRight.setAttribute("onclick", "neighHues()")
-		myRL.setAttribute("onkeypres", "neighHues()")
-		myRight.setAttribute("onkeypres", "neighHues()")
+		myRL.setAttribute("onclick", "keepText()")
+		myRight.setAttribute("onclick", "keepText()")
+		myRL.setAttribute("onkeypress", "keepText()")
+		myRight.setAttribute("onkeypress", "keepText()")
 	}
 }
+
+function keepText(){
+	traysFilled += 1;
+	let midCirc = document.getElementById("disCirc");
+	let midLabel = document.getElementById("disLabel");
+	let trayName = "tray" + traysFilled;
+	let labName = "trayLabel" + traysFilled;
+	var myTray = document.getElementById(trayName);
+	var myLab = document.getElementById(labName);
+	myTray.setAttribute("style", midCirc.getAttribute("style"));
+	myLab.setAttribute("style", midLabel.getAttribute("style"));
+	myLab.innerHTML = midLabel.innerHTML;
+	midCirc = document.getElementById("disCirc");
+	midCirc.setAttribute("style", "stroke: none; fill: none;");
+	midLabel = document.getElementById("disLabel");
+	midLabel.innerHTML = ""
+	neighHues()
+}
+
 
 </script>
 
